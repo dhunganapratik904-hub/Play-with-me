@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Test Your IQ with Pratik</title>
+  <style>
+    :root {
+      --bg-light: linear-gradient(to right, #ece9e6, #ffffff);
+      --bg-dark: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      --text-light: #333;
+      --text-dark: #eee;
+      --primary: #4e8cff;
+      --accent: #ff4081;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      transition: background 0.5s, color 0.5s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dark-mode {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 15px;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s;
+    }
+
+    .dark-mode .container {
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      margin-bottom: 20px;
+      animation: fadeInDown 1s ease-out;
+      color: var(--primary);
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .toggle-theme {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: inherit;
+      z-index: 1000;
+    }
+
+    .quiz, .result {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .quiz.active, .result.active {
+      display: flex;
+    }
+
+    .question {
+      margin-bottom: 15px;
+      font-size: 1.1em;
+    }
+
+    .options {
+      width: 100%;
+      display: grid;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .options button {
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: var(--primary);
+      color: #fff;
+      transition: background 0.3s;
+    }
+
+    .options button:hover {
+      background: var(--accent);
+    }
+
+    .timer {
+      font-size: 1.2em;
+      margin-bottom: 15px;
+      color: var(--accent);
+    }
+
+    .score {
+      font-size: 1.5em;
+      margin-bottom: 15px;
+    }
+
+    .play-again {
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      background: var(--primary);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .play-again:hover {
+      background: var(--accent);
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5em;
+      }
+
+      .container {
+        padding: 15px;
+      }
+    }
+
+    /* Animated star background (for extra visual appeal) */
+    body::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(white 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: stars 100s linear infinite;
+      z-index: 0;
+      opacity: 0.05;
+    }
+
+    @keyframes stars {
+      from {
+        transform: translate(0, 0);
+      }
+      to {
+        transform: translate(-100px, -100px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <label class="toggle-theme">
+    <input type="checkbox" id="themeSwitch" /> Dark Mode
+  </label>
+
+  <div class="container">
+    <h1>Test Your IQ with Pratik</h1>
+
+    <div class="quiz active" id="quiz">
+      <div class="timer" id="timer">Time Left: 30s</div>
+      <div class="question" id="question">Question text here</div>
+      <div class="options" id="options"></div>
+    </div>
+
+    <div class="result" id="result">
+      <div class="score" id="score">Your Score: 0/20</div>
+      <div class="feedback" id="feedback">Feedback text</div>
+      <button class="play-again" id="playAgain">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      { q: "What is the SI unit of force?", options: ["Newton", "Joule", "Pascal", "Watt"], a: 0 },
+      { q: "H₂O is the chemical formula for?", options: ["Hydrogen Peroxide", "Water", "Hydroxide", "Ozone"], a: 1 },
+      { q: "Solve: √144", options: ["10", "11", "12", "14"], a: 2 },
+      { q: "Ohm's Law relates voltage, current and ____.", options: ["Resistance", "Power", "Charge", "Energy"], a: 0 },
+      { q: "What is Avogadro’s number approximately?", options: ["6.02×10²³", "9.81", "3.00×10⁸", "1.60×10⁻¹⁹"], a: 0 },
+      { q: "Derivative of x² is?", options: ["2x", "x", "x²", "2"], a: 0 },
+      { q: "Who proposed the law of planetary motion?", options: ["Kepler", "Newton", "Einstein", "Bohr"], a: 0 },
+      { q: "pH < 7 indicates?", options: ["Neutral", "Acidic", "Basic", "Alkaline"], a: 1 },
+      { q: "ⁿCₙ = ?", options: ["2ⁿ", "n!", "1", "n"], a: 2 },
+      { q: "The speed of light (approx)?", options: ["3×10⁶ m/s", "3×10⁸ m/s", "3×10¹⁰ m/s", "3×10¹² m/s"], a: 1 },
+      { q: "The law of conservation of mass was given by?", options: ["Lavoisier", "Mendeleev", "Dalton", "Newton"], a: 0 },
+      { q: "Integral of dx/x is?", options: ["x", "ln|x|", "1/x", "eˣ"], a: 1 },
+      { q: "Unit of electric charge?", options: ["Coulomb", "Ohm", "Volt", "Watt"], a: 0 },
+      { q: "Atomic number defines?", options: ["Mass", "Atomic weight", "Protons", "Neutrons"], a: 2 },
+      { q: "What is 45° in radians?", options: ["π/6", "π/4", "π/3", "π/2"], a: 1 },
+      { q: "Noble gas with atomic number 10?", options: ["Argon", "Neon", "Helium", "Krypton"], a: 1 },
+      { q: "What’s f(x)=x³; f’(x)?", options: ["2x", "3x²", "x²", "3x"], a: 1 },
+      { q: "Molar mass of CO₂ (~)?", options: ["44 g/mol", "28 g/mol", "32 g/mol", "16 g/mol"], a: 0 },
+      { q: "Acceleration due to gravity (Earth)?", options: ["9.8 m/s²", "10 m/s²", "9.8 km/s²", "9.8 cm/s²"], a: 0 },
+      { q: "Oxidation state of O in H₂O₂?", options: ["-1", "0", "-2", "+1"], a: 0 },
+    ];
+
+    let current = 0, score = 0, timeLeft = 30, timerId;
+    const total = questions.length;
+
+    const quizEl = document.getElementById('quiz');
+    const quesEl = document.getElementById('question');
+    const optsEl = document.getElementById('options');
+    const timerEl = document.getElementById('timer');
+    const resultEl = document.getElementById('result');
+    const scoreEl = document.getElementById('score');
+    const feedbackEl = document.getElementById('feedback');
+    const playAgainBtn = document.getElementById('playAgain');
+    const themeSwitch = document.getElementById('themeSwitch');
+
+    function startTimer() {
+      timeLeft = 30;
+      timerEl.textContent = `Time Left: ${timeLeft}s`;
+      timerId = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = `Time Left: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(timerId);
+          nextQuestion();
+        }
+      }, 1000);
+    }
+
+    function showQuestion() {
+      const q = questions[current];
+      quesEl.textContent = `Q${current + 1}. ${q.q}`;
+      optsEl.innerHTML = '';
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.textContent = opt;
+        btn.onclick = () => {
+          clearInterval(timerId);
+          if (i === q.a) score++;
+          nextQuestion();
+        };
+        optsEl.appendChild(btn);
+      });
+      startTimer();
+    }
+
+    function nextQuestion() {
+      current++;
+      if (current < total) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      quizEl.classList.remove('active');
+      resultEl.classList.add('active');
+      scoreEl.textContent = `Your Score: ${score}/${total}`;
+      let fb = score > total * 0.8 ? "🌟 Excellent work!"
+        : score > total * 0.5 ? "👍 Good job, keep practicing!"
+        : "📘 You can do better next time.";
+      feedbackEl.textContent = fb;
+    }
+
+    playAgainBtn.onclick = () => {
+      current = 0;
+      score = 0;
+      resultEl.classList.remove('active');
+      quizEl.classList.add('active');
+      showQuestion();
+    };
+
+    themeSwitch.addEventListener('change', () => {
+      document.body.classList.toggle('dark-mode');
+    });
+
+    showQuestion();
+  </script>
+</body>
+</html>
